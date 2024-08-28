@@ -17,6 +17,14 @@
         "command": "leptos-explorer.helloWorld",
         "title": "Hello World"
       }
+    ],
+    "foldingRanges": [
+        {
+            "language": "rust",
+            "providers": [
+                "./src/foldingProvider"
+            ]
+        }
     ]
   },
   "scripts": {
