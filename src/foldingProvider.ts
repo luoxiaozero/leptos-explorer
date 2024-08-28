@@ -6,6 +6,7 @@ export class ViewFoldingRangeProvider implements vscode.FoldingRangeProvider {
         context: vscode.FoldingContext,
         token: vscode.CancellationToken
     ): vscode.ProviderResult<vscode.FoldingRange[]> {
+        // document.uri.fsPath;
         const foldingRanges: vscode.FoldingRange[] = [];
         const text = document.getText();
         const regex = /<div>([\s\S]*?)<\/div>/g;

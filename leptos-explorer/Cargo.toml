@@ -1,0 +1,11 @@
+[package]
+publish = false
+name = "leptos-explorer"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+syn = { version = "2.0.76", features = ["visit", "full", "extra-traits"] }
+proc-macro2 = { version = "1.0.86", features = ["span-locations"] }
+crop = "0.4.2"
+rstml = "0.12.0"
