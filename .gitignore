@@ -5,3 +5,5 @@ node_modules
 *.vsix
 
 *.node
+package-lock.json
+pnpm-lock.yaml

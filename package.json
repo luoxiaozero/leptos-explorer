@@ -1,8 +1,10 @@
 {
   "name": "leptos-explorer",
   "displayName": "Leptos Explorer",
-  "description": "",
+  "description": "Leptos' VSCode extension",
   "version": "0.0.1",
+  "publisher": "luoxiaozero",
+  "repository": "https://github.com/luoxiaozero/leptos-explorer",
   "engines": {
     "vscode": "^1.92.0"
   },
