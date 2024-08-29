@@ -13,23 +13,32 @@ pub fn collect_node_folding_range(nodes: Vec<Node>) -> Vec<FoldingRange> {
                 } = el;
                 let children_ranges = collect_node_folding_range(children);
 
-                let Some(close_tag) = close_tag else {
-                    return children_ranges;
-                };
+                let open_tag_span = open_tag.span();
+                let open_tag_start_span = open_tag_span.start();
+                let start = open_tag_start_span.line - 1;
 
-                let open_span = open_tag.span();
-                let close_span = close_tag.span();
-
-                let start = open_span.start().line - 1;
-                let end = if close_span.start().line > open_span.start().line {
-                    close_span.start().line - 2
+                let end = if let Some(close_tag) = close_tag {
+                    // <div>\n</div>
+                    let close_tag_span = close_tag.span();
+                    let close_tag_start_span = close_tag_span.start();
+                    close_tag_start_span.line - 2
+                } else if open_tag.is_self_closed() {
+                    // <input \n title="" \n />
+                    let end_tag_span = open_tag.end_tag.span();
+                    let end_tag_end_span = end_tag_span.start();
+                    end_tag_end_span.line - 2
                 } else {
                     return children_ranges;
                 };
-                let range = FoldingRange { start, end };
-                let mut ranges = vec![range];
-                ranges.extend(children_ranges);
-                ranges
+
+                if start < end {
+                    let range = FoldingRange { start, end };
+                    let mut ranges = vec![range];
+                    ranges.extend(children_ranges);
+                    ranges
+                } else {
+                    children_ranges
+                }
             }
             _ => vec![],
         })
