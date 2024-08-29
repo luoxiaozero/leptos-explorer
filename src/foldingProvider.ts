@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import { foldingRange } from "./ffi";
 
 export class ViewFoldingRangeProvider implements vscode.FoldingRangeProvider {
     provideFoldingRanges(
@@ -6,20 +7,23 @@ export class ViewFoldingRangeProvider implements vscode.FoldingRangeProvider {
         context: vscode.FoldingContext,
         token: vscode.CancellationToken
     ): vscode.ProviderResult<vscode.FoldingRange[]> {
-        // document.uri.fsPath;
         const foldingRanges: vscode.FoldingRange[] = [];
-        const text = document.getText();
-        const regex = /<div>([\s\S]*?)<\/div>/g;
-        // const viewMacroStartRegex = /view!\s*\{/g;
 
-        let match;
-        while ((match = regex.exec(text)) !== null) {
-            const start = document.positionAt(match.index);
-            const end = document.positionAt(match.index + match[0].length);
+        let ranges = foldingRange(document.uri.fsPath);
+        vscode.window.showInformationMessage("FoldingRangeList: " + ranges);
+        for (let i = 0; i < ranges.length; i += 2) {
+            const start = ranges[i] - 1;
+            const end = ranges[i + 1] - 2;
+            if (start >= end || start <= 0) {
+                continue;
+            }
+            vscode.window.showInformationMessage(
+                "FoldingRange: " + [start, end]
+            );
             foldingRanges.push(
                 new vscode.FoldingRange(
-                    start.line,
-                    end.line,
+                    start,
+                    end,
                     vscode.FoldingRangeKind.Region
                 )
             );
