@@ -59,7 +59,7 @@ jobs:
             - name: Install dependencies
               run: cd ./leptos-explorer && npm install
             - name: Build .node
-              run: npm build --target ${{ matrix.settings.target }}
+              run: npm run build --target ${{ matrix.settings.target }}
               shell: bash
             - name: Install dependencies
               run: cd ../ && npm install
