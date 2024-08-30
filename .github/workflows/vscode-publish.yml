@@ -31,7 +31,7 @@ jobs:
                       vsceTarget: "win32-x64"
                     - host: ubuntu-latest
                       target: x86_64-unknown-linux-musl
-                      vsceTarget: "liunx-x64"
+                      vsceTarget: "linux-x64"
                     
         name: stable - ${{ matrix.settings.target }} - node@20
         runs-on: ${{ matrix.settings.host }}
@@ -64,7 +64,7 @@ jobs:
               run: npx vsce package --target ${{ matrix.settings.vsceTarget }}
             - uses: actions/upload-artifact@v2
               with:
-                name: ${{ env.vsceTarget }}
+                name: ${{ matrix.settings.vsceTarget }}
                 path: "*.vsix"
                 
     publish:
