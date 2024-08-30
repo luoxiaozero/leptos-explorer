@@ -60,7 +60,6 @@ jobs:
               run: cd ./leptos-explorer && npm install
             - name: Build .node
               run: npm run build --target ${{ matrix.settings.target }}
-              shell: bash
             - name: Install dependencies
               run: cd ../ && npm install
             - name: Build vsce
