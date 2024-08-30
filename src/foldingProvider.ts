@@ -10,13 +10,9 @@ export class ViewFoldingRangeProvider implements vscode.FoldingRangeProvider {
         const foldingRanges: vscode.FoldingRange[] = [];
 
         let ranges = foldingRange(document.uri.fsPath);
-        vscode.window.showInformationMessage("FoldingRangeList: " + ranges);
         for (let i = 0; i < ranges.length; i += 2) {
             const start = ranges[i];
             const end = ranges[i + 1];
-            vscode.window.showInformationMessage(
-                "FoldingRange: " + [start, end]
-            );
             foldingRanges.push(
                 new vscode.FoldingRange(
                     start,

@@ -19,8 +19,7 @@ const esbuildCopyNodeFilePlugin = {
         build.onEnd(async (result) => {
             const outputFile = path.resolve(build.initialOptions.outfile);
             const outputDir = path.dirname(outputFile);
-            const nodePath = path.resolve("leptos-explorer/*.node");
-            glob.glob(nodePath)
+            glob.glob("leptos-explorer/*.node")
                 .then((files) => {
                     files.forEach((filePath) => {
                         const fileName = path.basename(filePath);

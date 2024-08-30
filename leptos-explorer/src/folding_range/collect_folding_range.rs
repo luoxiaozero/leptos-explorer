@@ -21,12 +21,20 @@ pub fn collect_node_folding_range(nodes: Vec<Node>) -> Vec<FoldingRange> {
                     // <div>\n</div>
                     let close_tag_span = close_tag.span();
                     let close_tag_start_span = close_tag_span.start();
-                    close_tag_start_span.line - 2
+                    if close_tag_start_span.line > 2 {
+                        close_tag_start_span.line - 2
+                    } else {
+                        0
+                    }
                 } else if open_tag.is_self_closed() {
                     // <input \n title="" \n />
                     let end_tag_span = open_tag.end_tag.span();
                     let end_tag_end_span = end_tag_span.start();
-                    end_tag_end_span.line - 2
+                    if end_tag_end_span.line > 2 {
+                        end_tag_end_span.line - 2
+                    } else {
+                        0
+                    }
                 } else {
                     return children_ranges;
                 };
