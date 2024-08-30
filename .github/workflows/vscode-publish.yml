@@ -57,7 +57,7 @@ jobs:
                       target/
                   key: ${{ matrix.settings.target }}-cargo-${{ matrix.settings.host }}
             - name: Build .node
-              run: cd ./leptos-explorer && npm install && npm run build --target ${{ matrix.settings.target }}
+              run: cd ./leptos-explorer && npm install && npm run build -- --target ${{ matrix.settings.target }}
             - name: Install dependencies
               run: npm install
             - name: Build vsce
