@@ -13,9 +13,9 @@ const esbuildCopyNodeFilePlugin = {
     name: "esbuild-copy-node-file",
 
     setup(build) {
-        if (production) {
-            return;
-        }
+        // if (production) {
+        //     return;
+        // }
         build.onEnd(async (result) => {
             const outputFile = path.resolve(build.initialOptions.outfile);
             const outputDir = path.dirname(outputFile);

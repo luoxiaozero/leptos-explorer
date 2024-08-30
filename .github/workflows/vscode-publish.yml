@@ -1,0 +1,82 @@
+name: VSCode publish
+env:
+    APP_NAME: leptos-explorer-ffi
+    MACOSX_DEPLOYMENT_TARGET: "10.13"
+    CARGO_INCREMENTAL: "1"
+permissions:
+    contents: write
+    id-token: write
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+jobs:
+    build:
+        strategy:
+            fail-fast: false
+            matrix:
+                settings:
+                    - host: macos-latest
+                      target: x86_64-apple-darwin
+                      vsceTarget: "darwin-x64"
+                    - host: macos-latest
+                      target: aarch64-apple-darwin
+                      vsceTarget: "darwin-arm64"
+                    - host: windows-latest
+                      target: x86_64-pc-windows-msvc
+                      vsceTarget: "win32-x64"
+                    - host: ubuntu-latest
+                      target: x86_64-unknown-linux-musl
+                      vsceTarget: "liunx-x64"
+                    
+        name: stable - ${{ matrix.settings.target }} - node@20
+        runs-on: ${{ matrix.settings.host }}
+        steps:
+            - uses: actions/checkout@v4
+            - name: Setup node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  cache: npm
+            - name: Install
+              uses: dtolnay/rust-toolchain@stable
+              with:
+                  toolchain: stable
+                  targets: ${{ matrix.settings.target }}
+            - name: Cache cargo
+              uses: actions/cache@v4
+              with:
+                  path: |
+                      ~/.cargo/registry/index/
+                      ~/.cargo/registry/cache/
+                      ~/.cargo/git/db/
+                      .cargo-cache
+                      target/
+                  key: ${{ matrix.settings.target }}-cargo-${{ matrix.settings.host }}
+            - name: Install dependencies
+              run: cd ./leptos-explorer && npm install
+            - name: Build .node
+              run: npm build --target ${{ matrix.settings.target }}
+              shell: bash
+            - name: Install dependencies
+              run: cd ../ && npm install
+            - name: Build vsce
+              run: npx vsce package --target ${{ matrix.settings.vsceTarget }}
+            - uses: actions/upload-artifact@v2
+              with:
+                name: ${{ env.vsceTarget }}
+                path: "*.vsix"
+                
+    publish:
+      runs-on: ubuntu-latest
+      needs: build
+      if: success() && startsWith( github.ref, 'refs/tags/')
+      steps:
+        - uses: actions/download-artifact@v2
+        - run: npx vsce publish --packagePath $(find . -iname *.vsix)
+          env:
+            VSCE_PAT: ${{ secrets.VSCE_PAT }}
